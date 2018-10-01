@@ -18,8 +18,24 @@ class Student
       SQL 
     DB[:conn].execute(sql)
   end 
-
-
+  
+  def self.drop_table 
+    sql = "DROP TABLE students"
+    DB[:conn].execute(sql)
+  end 
+  
+  def self.create(name:, grade:)
+    student = Student.new(name, grade)
+    student.save 
+  end 
+  
+  def save
+    sql = "INSERT INTO students (name, grade) VALUES (?, ?)"
+    statement = DB[:conn].prepare(sql)
+    statement.execute(self.name, self.grade)
+    @id = DB[:conn].last_insert_row_id 
+    self 
+  end 
   # Remember, you can access your database connection anywhere in this class
   #  with DB[:conn]  
   
